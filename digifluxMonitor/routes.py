@@ -98,7 +98,7 @@ def ping_all():
         result = historys_schema.dump(data)
         db.session.commit()
         print("result = ",result)
-        # return jsonify(result)
+        return jsonify(result)
     else:
         return jsonify({'msg':'No websites to ping.'})
 
