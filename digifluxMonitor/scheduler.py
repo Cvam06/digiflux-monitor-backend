@@ -13,7 +13,7 @@ def start_scheduler(ping_all, app):
     with app.app_context():
         global scheduler
         scheduler = BackgroundScheduler()
-        scheduler.add_job(func=ping_all, trigger="interval", seconds=5, id='website_polling')
+        scheduler.add_job(func=ping_all, trigger="interval", seconds=60, id='website_polling')
         scheduler.start()
 
 def stop_scheduler():

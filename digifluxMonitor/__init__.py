@@ -1,12 +1,20 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from flask_cors import CORS
 import os
+
+config = {
+  'ORIGINS': [
+    'http://localhost:3000',  # React
+  ],
+}
 
 #Init app
 app = Flask(__name__)
+CORS(app, resources={ r'/*': {'origins': config['ORIGINS']}}, supports_credentials=True)
 
-ENV = 'prod'
+ENV = 'dev'
 
 if ENV == 'dev':
     app.debug = True

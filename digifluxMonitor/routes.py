@@ -36,10 +36,16 @@ def get_all():
     result = websites_schema.dump(all_websites)
     return jsonify(result)
 
+@app.route('/websites/<id>', methods=['GET'])
+def getOneWebsite(id):
+    website = Website.query.get(id)
+    response = website_schema.dump(website)
+    return jsonify(response)
+
 # This will add new website in Websites table with given data
 @app.route('/addwebsite', methods=['POST'])
 def add_website():
-    name = request.json['name'] 
+    name = request.json['name']
     hostname = request.json['hostname']
     env = request.json['env']
 
@@ -121,6 +127,21 @@ def deleteOneWebsite(id):
 
     return website_schema.jsonify(website)
 
+@app.route('/getlatest', methods=['GET'])
+def getLatest():
+    maxBatchNumber = getMaxBatch()
+    latestBatchData = Pinghistory.query.filter(Pinghistory.batch_no == maxBatchNumber)
+    result = historys_schema.dump(latestBatchData)
+    sizeOfResult = len(result)
+    for i in range(sizeOfResult):
+        website_data = getOneWebsite(result[i]["website_id"])
+        print("website_data ============= ", website_data.json["name"])
+        result[i]["website"] = {"name":website_data.json["name"], "env": website_data.json["env"], "hostname":website_data.json["hostname"]}
+
+    
+    return jsonify(result)
+
+# This will start scheduler and 
 @app.route('/startscheduler', methods = ['GET'])
 def startScheler():
     start_scheduler(ping_all, app)
